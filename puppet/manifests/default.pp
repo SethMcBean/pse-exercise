@@ -1,3 +1,4 @@
+# Setup web root and vhost directories
 $web_root = [ "/var/www", "/var/www/puppetlabs.dev" ]
 
 file { $web_root:
@@ -7,10 +8,15 @@ file { $web_root:
   mode   => 775,
 }
 
+
 $example_root = '/var/www/puppetlabs.dev'
 
+
+# Make sure git is installed for use by vcsrepo
 package { git: ensure => installed }
 
+
+# Pull file from github and place in $example_root directory
 vcsrepo { $example_root:
   ensure   => present,
   provider => git,
@@ -22,6 +28,8 @@ vcsrepo { $example_root:
         ]
 }
 
+
+# Ensure resulting file has proper permissions
 file { "${example_root}/index.html":
   ensure  => present,
   group   => 'www-data',
@@ -29,14 +37,20 @@ file { "${example_root}/index.html":
   require => Vcsrepo[$example_root],
 }
 
+
+# Install and bootstrap an nginx instance
 class { 'nginx': }
 
+
+# Setup nginx vhost running on required port and point to file repository
 nginx::resource::vhost { 'www.puppetlabs.dev':
   ensure      => present,
   www_root    => $example_root,
   listen_port => 8000,
 }
 
+
+# Setup hosts file to resolve hostname for vhost
 $web_host = [ "www.puppetlabs.dev", "puppetlabs.dev" ]
 
 host { $web_host:
