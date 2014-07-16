@@ -10,4 +10,4 @@ pre-configured vhost directory under our web root. Lastly, I updated the local
 hosts file to resolve the hostname of our new vhost.
 
 Successful configuration was verified using the command:
-$curl www.puppetlabs.dev:8000
+$curl -v www.puppetlabs.dev:8000
