@@ -12,20 +12,20 @@ $example_root = '/var/www/puppetlabs.dev'
 package { git: ensure => installed }
 
 vcsrepo { $example_root:
-  ensure => present,
+  ensure   => present,
   provider => git,
-  source => 'https://github.com/puppetlabs/exercise-webpage.git',
+  source   => 'https://github.com/puppetlabs/exercise-webpage.git',
   revision => master,
-  require => [
+  require  => [
         Package[git],
         File[$web_root],
         ]
 }
 
 file { "${example_root}/index.html":
-  ensure => present,
-  group => 'www-data',
-  mode => 0775,
+  ensure  => present,
+  group   => 'www-data',
+  mode    => 0775,
   require => Vcsrepo[$example_root],
 }
 
